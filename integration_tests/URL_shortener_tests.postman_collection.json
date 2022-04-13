@@ -1,0 +1,384 @@
+{
+  "info": {
+    "_postman_id": "9f5c7862-1664-4b25-b57f-2ee150bd8976",
+    "name": "URL_shortener_tests",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Test_create_valid_shortened_url",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Successful POST request\", function () {",
+              "    pm.expect(pm.response.code).to.be.oneOf([201]);",
+              "});",
+              "",
+              "pm.test(\"Generated proper id\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.id).length.greaterThan(0);",
+              "});",
+              "",
+              "pm.test(\"Fetched proper content\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.content).length.greaterThan(0);",
+              "});",
+              "",
+              "pm.test(\"Created date is valid\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.createdDate).is.not.null;",
+              "});",
+              "",
+              "pm.test(\"Shortened url is generated\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.shortenedUrl).length.greaterThan(4);",
+              "});",
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"originalUrl\": \"https://jsonplaceholder.typicode.com/\",\n    \"requesterId\": \"sunny\",\n    \"ExpiryDate\": \"2023-04-12T02:05:55Z\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://{{host}}:{{port}}/url-shortener",
+          "protocol": "http",
+          "host": [
+            "{{host}}"
+          ],
+          "port": "{{port}}",
+          "path": [
+            "url-shortener"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Test_create_valid_shortened_url_missing_original_url",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Unsuccessful POST request\", function () {",
+              "    pm.expect(pm.response.code).to.be.oneOf([400]);",
+              "});",
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"requesterId\": \"sunny\",\n    \"ExpiryDate\": \"2023-04-12T02:05:55Z\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://{{host}}:{{port}}/url-shortener",
+          "protocol": "http",
+          "host": [
+            "{{host}}"
+          ],
+          "port": "{{port}}",
+          "path": [
+            "url-shortener"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Test_create_valid_shortened_url_valid_original_url_but_website_down",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Unsuccessful POST request\", function () {",
+              "    pm.expect(pm.response.code).to.be.oneOf([400]);",
+              "});",
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"originalUrl\": \"https://nonexistsentwebsite.com/\",\n    \"requesterId\": \"sunny\",\n    \"ExpiryDate\": \"2023-04-12T02:05:55Z\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://{{host}}:{{port}}/url-shortener",
+          "protocol": "http",
+          "host": [
+            "{{host}}"
+          ],
+          "port": "{{port}}",
+          "path": [
+            "url-shortener"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Test_create_shortened_url_invalid_original_url",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Unsuccesful POST request.Bad request for invalid original url string\", function () {",
+              "    pm.expect(pm.response.code).to.be.oneOf([400]);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"originalUrl\": \"httpe://jsonplaceholder.typicode.com/\",\n    \"requesterId\": \"sunny\",\n    \"ExpiryDate\": \"2023-04-12T02:05:55Z\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://{{host}}:{{port}}/url-shortener",
+          "protocol": "http",
+          "host": [
+            "{{host}}"
+          ],
+          "port": "{{port}}",
+          "path": [
+            "url-shortener"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Test_create_shortened_url_invalid_expiry_date",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Unsuccesful POST request.Bad request for invalid expiry date\", function () {",
+              "    pm.expect(pm.response.code).to.be.oneOf([400]);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"originalUrl\": \"http://jsonplaceholder.typicode.com/\",\n    \"requesterId\": \"sunny\",\n    \"ExpiryDate\": \"2021-04-12T02:05:55Z\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://{{host}}:{{port}}/url-shortener",
+          "protocol": "http",
+          "host": [
+            "{{host}}"
+          ],
+          "port": "{{port}}",
+          "path": [
+            "url-shortener"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Test_create_shortened_url_invalid_expiry_date_format",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Unsuccesful POST request.Bad request for invalid expiry date\", function () {",
+              "    pm.expect(pm.response.code).to.be.oneOf([400]);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"originalUrl\": \"http://jsonplaceholder.typicode.com/\",\n    \"requesterId\": \"sunny\",\n    \"ExpiryDate\": \"2021-04-12\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://{{host}}:{{port}}/url-shortener",
+          "protocol": "http",
+          "host": [
+            "{{host}}"
+          ],
+          "port": "{{port}}",
+          "path": [
+            "url-shortener"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Test_get_shortened_url_invalid_tiny_url_id",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Unsuccesful GET request.Cannopt find original url\", function () {",
+              "    pm.expect(pm.response.code).to.be.oneOf([404]);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://{{host}}:{{port}}/url-shortener/{{invalid_short_url}}",
+          "protocol": "http",
+          "host": [
+            "{{host}}"
+          ],
+          "port": "{{port}}",
+          "path": [
+            "url-shortener",
+            "{{invalid_short_url}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Test_get_shortened_url_valid_tiny_url_id",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Fetch original url back success\", function () {",
+              "    pm.response.to.have.status(201);",
+              "    var jsonData = pm.response.json();",
+              "    var shortenedUrl = jsonData.shortenedUrl;",
+              "    pm.expect(shortenedUrl).length.greaterThan(4);",
+              "    pm.sendRequest(\"http://\" + pm.collectionVariables.get(\"host\") + \":\" + pm.collectionVariables.get(\"port\") + \"/\" + shortenedUrl, function (err, response) {",
+              "        var originalUrl = pm.response.json().originalUrl",
+              "        pm.expect(originalUrl).is.not.null;",
+              "    });",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "pm.sendRequest(\"https://postman-echo.com/get\", function (err, response) {",
+              "    console.log(response.json());",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"originalUrl\": \"https://jsonplaceholder.typicode.com/\",\n    \"requesterId\": \"sunny\",\n    \"ExpiryDate\": \"2023-04-12T02:05:55Z\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://{{host}}:{{port}}/url-shortener",
+          "protocol": "http",
+          "host": [
+            "{{host}}"
+          ],
+          "port": "{{port}}",
+          "path": [
+            "url-shortener"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "host",
+      "value": "localhost"
+    },
+    {
+      "key": "port",
+      "value": "8185"
+    },
+    {
+      "key": "invalid_short_url",
+      "value": "dummy"
+    }
+  ]
+}
